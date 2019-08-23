@@ -16,6 +16,8 @@ import config from './config'
 import authenticated from './middlewares/authenticate'
 import authenticate from './middlewares/authenticate';
 
+import conekta from 'conekta';
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,17 +25,23 @@ const port = process.env.PORT || 5000;
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 //Server side validations 
 
 function validateInput(data, otherValidations) {
-    let { errors } = otherValidations(data);
+    let {
+        errors
+    } = otherValidations(data);
 
 
     //Using bookshelf
     return User.query({
-        where: { email: data.email }
+        where: {
+            email: data.email
+        }
         // orWhere: { username: data.username }
     }).fetch().then(user => {
         if (user) {
@@ -77,20 +85,38 @@ app.use((req, res, next) => {
 app.post('/api/users', (req, res) => {
     //this will return either valid data or errors and store them on respective constants.
     setTimeout(() => {
-        validateInput(req.body, commonValidations).then(({ errors, isValid }) => {
+        validateInput(req.body, commonValidations).then(({
+            errors,
+            isValid
+        }) => {
             if (!isValid) {
                 res.status(400).json(errors);
             } else {
-                const { fname, lname, email, password } = req.body;
+                const {
+                    fname,
+                    lname,
+                    email,
+                    password
+                } = req.body;
                 //encypting password
                 const password_digest = bcrypt.hashSync(password, 10);
 
                 //use user model and catch errors or return success 
                 User.forge({
-                    fname, lname, email, password_digest
-                }, { hasTimestamps: true }).save()
-                    .then(user => res.json({ success: true, data: req.body }))
-                    .catch(err => res.status(500).json({ error: err }))
+                        fname,
+                        lname,
+                        email,
+                        password_digest
+                    }, {
+                        hasTimestamps: true
+                    }).save()
+                    .then(user => res.json({
+                        success: true,
+                        data: req.body
+                    }))
+                    .catch(err => res.status(500).json({
+                        error: err
+                    }))
 
             }
         })
@@ -102,10 +128,15 @@ app.post('/api/users', (req, res) => {
 //Route for authentication 
 
 app.post('/api/auth', (req, res) => {
-    const { password, email } = req.body;
+    const {
+        password,
+        email
+    } = req.body;
 
     User.query({
-        where: { email: email },
+        where: {
+            email: email
+        },
     }).fetch().then(user => {
         if (user) {
             if (bcrypt.compareSync(password, user.get('password_digest'))) {
@@ -113,15 +144,60 @@ app.post('/api/auth', (req, res) => {
                     id: user.get('id'),
                     email: user.get('email')
                 }, config.jwtSecret);
-                res.json({ token });
+                res.json({
+                    token
+                });
 
             } else {
-                res.status(401).json({ errors: { form: 'Credenciales no validas. Intenta de nuevo.' } })
+                res.status(401).json({
+                    errors: {
+                        form: 'Credenciales no validas. Intenta de nuevo.'
+                    }
+                })
             }
         } else {
-            res.status(401).json({ errors: { form: 'Credenciales no validas. Intenta de nuevo.' } })
+            res.status(401).json({
+                errors: {
+                    form: 'Credenciales no validas. Intenta de nuevo.'
+                }
+            })
         }
     })
+})
+
+
+app.post('/api/processPayment', (req, res) => {
+    //setup conekta
+    // console.log("######################")
+    // console.log(req.body)
+    // console.log("######################")
+    conekta.api_key = 'key_qcxP1NJhhTz94mfx4zza6w';
+    conekta.locale = 'es';
+    // conekta.Order.create(req.body).then(function (result) {
+    //     console.log('Orden generada');
+    //     console.log(result.toObject());
+    //     res.status(200).json({ data: result.toObject() })
+    // }, function (error) {
+    //     console.log('Hubo un ERROR')
+    //     console.log(error)
+    //     res.status(401).json({ errors: error })
+    // })
+
+    conekta.Order.create(req.body).then(result => {
+            console.log("######################");
+            console.log('This is the response....');
+            console.log(result.toObject());
+            console.log("######################");
+            res.status(200).json(result.toObject());
+        })
+        .catch(err => {
+            console.log('Valio chit');
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        })
+
 })
 
 //Route to check uniqueness for user 
@@ -129,9 +205,13 @@ app.post('/api/auth', (req, res) => {
 app.get('/api/users/:email', (req, res) => {
     User.query({
         select: ['email'],
-        where: { email: req.params.email }
+        where: {
+            email: req.params.email
+        }
     }).fetch().then(user => {
-        res.json({ user });
+        res.json({
+            user
+        });
     })
 });
 
@@ -140,12 +220,16 @@ app.get('/api/users/:email', (req, res) => {
 //we will be using express middleware 
 
 app.post('/api/users/updatePassword', authenticate, (req, res) => {
-    res.status(201).json({ user: req.currentUser })
+    res.status(201).json({
+        user: req.currentUser
+    })
 })
 
 // create a GET route
 app.get('/backend', (req, res) => {
-    res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
+    res.send({
+        express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT'
+    });
 });
 
 

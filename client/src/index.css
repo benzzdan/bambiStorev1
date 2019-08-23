@@ -1015,3 +1015,12 @@ span.badge {
     color: black;
     font-size: 20px !important;
 }
+
+.icon_style {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}

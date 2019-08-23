@@ -9,6 +9,7 @@ import CheckoutContainer from './Checkout/CheckoutContainer'
 import AccountInfoPage from './Account/AccountInfoPage'
 import SingleProductContainer from './Products/SingleProductContainer'
 import CategoryProductsContainer from './Products/CategoryProductsContainer'
+import OrderSummary from './Checkout/OrderSummary'
 //applying authentication at the client route level
 import requireAuth from '../utils/requireAuth'
 
@@ -33,6 +34,7 @@ const App = props => (
       <Route path="/accountInfo" component={requireAuth(AccountInfoPage)} />
       <Route path="/product/:id" component={SingleProductContainer} />
       <Route path="/category/:name" component={CategoryProductsContainer} />
+      <Route path="/ordersummary" component={OrderSummary} />
     </Switch>
   </div>
 )

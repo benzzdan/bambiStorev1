@@ -1,113 +1,115 @@
 import React from 'react';
 import { reduxForm, Field } from 'redux-form';
+import isEmpty from 'lodash/isEmpty';
+
 import Radio from './Radio'
 
 
-const values = {}
 
-const onSubmit = values => {
+
+const validate = values => {
+    const errors = {}
+    if (!values.nombre) {
+        errors.nombre = 'Campo requerido.'
+    }
+    if (!values.apellido) {
+        errors.apellido = 'Campo requerido.'
+    }
+    if (!values.address1) {
+        errors.address1 = 'Campo requerido.'
+    }
+    if (!values.ciudad) {
+        errors.ciudad = 'Campo requerido.'
+    }
+    if (!values.cp) {
+        errors.cp = 'Campo requerido.'
+    }
+    if (!values.email) {
+        errors.email = 'Campo requerido'
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Direccion de correo invalida.'
+    }
+
+    //Delivery validation 
+    if (!values.envio) {
+        errors.envio = "Campo requerido"
+    }
+
+    if (isEmpty(errors)) {
+        console.log("No hay error!");
+
+    } else {
+        console.log("Errors!");
+        console.log(errors.envio)
+    }
+    return errors
+}
+
+const onSubmit = ({ values }) => {
     values = JSON.stringify(values);
     console.log(values);
-    // alert(JSON.stringify(values))
 };
 
+const renderField = ({ input, defaultValue, label, type, meta: { touched, error, warning } }) => (
+    <div>
+        <div>
+            <input {...input} placeholder={label} type={type} value={defaultValue} className={error && touched ? 'invalid' : null} />
+            {touched && ((error && <span className="red-text">{error}</span>) || (warning && <span>{warning}</span>))}
+        </div>
+    </div>
+)
 
 
-
-const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress }) => (
+const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress, submitting, pristine, invalid }) => (
     < div >
         <h4 className="bold">Envio  <span><a onClick={prevStep} className={step == 0 ? 'hide' : 'default-anchor'}>Cambiar</a></span></h4>
         <form onSubmit={handleSubmit} className={step != 0 ? 'hide' : null} style={{ width: '93%' }}>
-            <Field
+            {/* <Field
                 component="input"
                 name="email"
                 type="email"
                 aria-label="Email"
                 placeholder="Email"
-            />
+                required
+            /> */}
+            <Field name="email" type="email" component={renderField} label="Email" />
+
             <div className="row">
                 <div className="col s6">
-                    <Field
-                        component="input"
-                        className="nombre"
-                        required="required"
-                        placeholder="Nombre"
-                        name="nombre"
-                        type="text"
-                        aria-label="Nombre"
-                    />
+                    <Field name="nombre" type="text" component={renderField} label="Nombre" />
+
                 </div>
                 <div className="col s6">
-                    <Field
-                        component="input"
-                        className="apellido"
-                        required="required"
-                        placeholder="Apellido"
-                        name="apellido"
-                        type="text"
-                        aria-label="Apellido"
-                    />
+                    <Field name="apellido" type="text" component={renderField} label="Apellido" />
+
                 </div>
             </div>
             <div className="row">
                 <div className="col s12">
-                    <Field
-                        component="input"
-                        className="address1"
-                        required="required"
-                        placeholder="Dirección"
-                        name="address1"
-                        type="text"
-                        aria-label="Dirección"
-                    />
+                    <Field name="address1" type="text" component={renderField} label="Dirección" />
+
+                </div>
+            </div>
+            <div className="row">
+                <div className="col s4">
+                    <Field name="cp" type="text" component={renderField} label="C.P" />
+                </div>
+                <div className="col s4">
+                    <Field name="ciudad" type="text" component={renderField} label="Ciudad" />
+                </div>
+                {/* TODO: Hacer multiselect de estado */}
+                <div className="col s4">
+                    <Field name="estado" type="text" component={renderField} label="Estado" />
                 </div>
             </div>
             <div className="row">
                 <div className="col s6">
-                    <Field
-                        component="input"
-                        className="cp"
-                        required="required"
-                        placeholder="C.P."
-                        name="cp"
-                        type="text"
-                        aria-label="Codigo Postal"
-                    />
+                    <Field name="tel" type="text" component={renderField} label="Telefono" />
+
                 </div>
+
                 <div className="col s6">
-                    <Field
-                        component="input"
-                        className="ciudad"
-                        required="required"
-                        placeholder="Ciudad"
-                        name="ciudad"
-                        type="text"
-                        aria-label="Ciudad"
-                    />
-                </div>
-            </div>
-            <div className="row">
-                <div className="col s6">
-                    <Field
-                        component="input"
-                        className="tel"
-                        required="required"
-                        placeholder="Telefono"
-                        name="tel"
-                        type="text"
-                        aria-label="Telefono"
-                    />
-                </div>
-                <div className="col s6">
-                    <Field
-                        component="input"
-                        className="pais"
-                        required="required"
-                        placeholder="Pais"
-                        name="pais"
-                        type="text"
-                        aria-label="Pais"
-                    />
+                    <Field name="pais" type="text" value="MEX" component={renderField} label="Pais" defaultValue="MEX" />
                 </div>
             </div>
             <div className="row" style={{ marginBottom: 'unset' }}>
@@ -150,7 +152,9 @@ const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress
                                     </p>
                 </div>
             </div>
-            <button onClick={(e) => { nextStep(); showProgress(); }} className="btn-large teal" type="submit">Continuar</button>
+            {/* <button onClick={(e) => { nextStep(); showProgress(); }} className="btn-large teal" type="submit">Continuar</button> */}
+            {/* <button onClick={(e) => { showProgress(); }} className="btn-large t9eal" type="submit">Continuar</button> */}
+            <button id="the-button" onClick={(e) => { invalid ? null : nextStep(); showProgress(); }} type="submit" disabled={pristine || submitting}>Submit</button>
         </form>
     </div >
 )
@@ -158,5 +162,8 @@ const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress
 
 export default reduxForm({
     form: 'myTestForm',
-    onSubmit
+    onSubmit,
+    validate,
+    destroyOnUnmount: false
 })(UserDetailsForm2);
+

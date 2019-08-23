@@ -19,6 +19,7 @@
         "bcrypt": "^3.0.4",
         "bluebird": "^3.5.3",
         "bookshelf": "^0.14.2",
+        "conekta": "^3.7.1",
         "express": "^4.16.4",
         "jsonwebtoken": "^8.5.1",
         "knex": "^0.12.0",

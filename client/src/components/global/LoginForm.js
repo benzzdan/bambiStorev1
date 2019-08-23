@@ -44,7 +44,7 @@ class LoginForm extends Component {
         this.onChange = this.onChange.bind(this);
     }
 
-
+    //TODO: Check email at client before
     isValid() {
         const { errors, isValid } = validateInput(this.state);
         if (!isValid) {
