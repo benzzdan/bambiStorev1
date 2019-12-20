@@ -20,10 +20,20 @@ export function setLoading() {
 }
 
 
-export function processPayment(data) {
+// export function processPayment(data) {
 
+//     return axios.post('/api/processPayment', data).then(res => {
+//         console.log('test from conekta.js')
+//         console.log(res);
+//     })
+// }
+
+export function processPayment(data) {
     return axios.post('/api/processPayment', data).then(res => {
         console.log('test from conekta.js')
-        console.log(res);
-    })
+        const orderData = res.data;
+        localStorage.setItem('orderID', orderData.id);
+        localStorage.setItem('orderAmount', orderData.amount / 100);
+        localStorage.setItem('orderAuthCode', orderData.charges.data[0].payment_method.auth_code);
+    });
 }

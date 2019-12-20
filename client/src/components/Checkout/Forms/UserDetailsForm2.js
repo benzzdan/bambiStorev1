@@ -1,5 +1,8 @@
 import React from 'react';
-import { reduxForm, Field } from 'redux-form';
+import {
+    reduxForm,
+    Field
+} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
 import Radio from './Radio'
@@ -46,8 +49,10 @@ const validate = values => {
 }
 
 const onSubmit = ({ values }) => {
-    values = JSON.stringify(values);
-    console.log(values);
+    console.log("This are the values for the user form")
+    // console.log(values)
+    // values = JSON.stringify(values);
+    // console.log(values);
 };
 
 const renderField = ({ input, defaultValue, label, type, meta: { touched, error, warning } }) => (
@@ -59,19 +64,11 @@ const renderField = ({ input, defaultValue, label, type, meta: { touched, error,
     </div>
 )
 
-
 const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress, submitting, pristine, invalid }) => (
     < div >
         <h4 className="bold">Envio  <span><a onClick={prevStep} className={step == 0 ? 'hide' : 'default-anchor'}>Cambiar</a></span></h4>
         <form onSubmit={handleSubmit} className={step != 0 ? 'hide' : null} style={{ width: '93%' }}>
-            {/* <Field
-                component="input"
-                name="email"
-                type="email"
-                aria-label="Email"
-                placeholder="Email"
-                required
-            /> */}
+
             <Field name="email" type="email" component={renderField} label="Email" />
 
             <div className="row">
@@ -109,7 +106,7 @@ const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress
                 </div>
 
                 <div className="col s6">
-                    <Field name="pais" type="text" value="MEX" component={renderField} label="Pais" defaultValue="MEX" />
+                    <Field name="pais" type="text"  component={renderField} label="Pais" />
                 </div>
             </div>
             <div className="row" style={{ marginBottom: 'unset' }}>
@@ -166,4 +163,3 @@ export default reduxForm({
     validate,
     destroyOnUnmount: false
 })(UserDetailsForm2);
-

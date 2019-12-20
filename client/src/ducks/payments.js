@@ -10,12 +10,22 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case SUBMIT_PAYMENT:
-            return { ...state, processing: true, complete: false };
+            return {
+                ...state,
+                processing: true,
+                complete: false
+            };
 
         case PAYMENT_COMPLETE:
-            return { ...state, processing: false, complete: true };
+            return {
+                ...state,
+                processing: false,
+                complete: true
+            };
 
         default:
-            return { ...state };
+            return {
+                ...state
+            };
     }
 };

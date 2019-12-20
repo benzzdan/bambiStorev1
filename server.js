@@ -168,9 +168,9 @@ app.post('/api/auth', (req, res) => {
 
 app.post('/api/processPayment', (req, res) => {
     //setup conekta
-    // console.log("######################")
-    // console.log(req.body)
-    // console.log("######################")
+    console.log("######################")
+    console.log(req.body)
+    console.log("######################")
     conekta.api_key = 'key_qcxP1NJhhTz94mfx4zza6w';
     conekta.locale = 'es';
     // conekta.Order.create(req.body).then(function (result) {

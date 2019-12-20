@@ -29,46 +29,6 @@ import Loading from '../global/Loading';
 import $ from 'jquery';
 
 
-
-var CheckoutTemplate = {
-    customer: {
-        name: 'John Doe',
-        email: 'john@doe.co'
-    },
-    shipping_address: {
-        first_name: 'John',
-        last_name: 'Doe',
-        line_1: '2nd Floor British India House',
-        line_2: '15 Carliol Square',
-        city: 'Newcastle Upon Tyne',
-        postcode: 'NE1 6UF',
-        county: 'Tyne & Wear',
-        country: 'United Kingdom'
-    },
-    billing_address: {
-        first_name: 'John',
-        last_name: 'Doe',
-        line_1: '2nd Floor British India House',
-        line_2: '15 Carliol Square',
-        city: 'Newcastle Upon Tyne',
-        postcode: 'NE1 6UF',
-        county: 'Tyne & Wear',
-        country: 'United Kingdom'
-    }
-};
-
-
-var PaymentTemplate = {
-    gateway: 'stripe',
-    method: 'purchase',
-    first_name: 'John',
-    last_name: 'Doe',
-    number: '4242424242424242',
-    month: '08',
-    year: '2020',
-    verification_value: '123'
-};
-
 class CheckoutForm extends Component {
 
     state = {
@@ -140,9 +100,14 @@ class CheckoutForm extends Component {
 
     }
 
+    //TODO: set the loading part for the charge
     handleSubmit = (values, dispatch) => {
+
+        console.log('Values from CheckoutForm: ');
+
+        console.log(values);
         const e = this
-        this.setState({ cardErrors: null });
+        this.setState({ cardErrors: null, isLoading: true });
 
         //tokenizar tarjeta
         window.Conekta.setPublicKey('key_A8durRfXXqjBKMmqxypZzBA');
@@ -170,7 +135,7 @@ class CheckoutForm extends Component {
         setTimeout(() => {
             if (this.state.cardErrors != null) {
                 this.setState({ isLoading: false })
-                console.log("Its not null!")
+                console.log("Estos son los errores al querer tokenizar")
                 console.log(this.state.cardErrors)
             }
         }, 2000);
@@ -234,28 +199,132 @@ class CheckoutForm extends Component {
                     "city": ciudad,
                     "state": estado,
                     "postal_code": cp,
-                    "country": pais,
+                    "country": "MX",
                     "residential": true,
                     "object": "shipping_address"
                 }
             }
         }
 
+        const customerId = 'a1856486-bfa3-403a-8ea2-b1ed920b7939'
 
-        processPayment(data).then(res => {
-            console.log('This is a success response, redirecting to order summary');
-            dispatch(push('/ordersummary'));
-        }).catch(err => {
-            console.log('Valio chitzuuu');
-            console.log(err.response);
-        })
 
+        //TODO: Moltin clear cart after order completed and process order too.
+
+        setTimeout(() => {
+            if (this.state.cardErrors == null) {
+                let CheckoutTemplate = {
+                    customer: {
+                        name: 'Test Customer',
+                        email: 'ttest@gmail.com'
+                    },
+                    billing_address: {
+                        first_name: 'John',
+                        last_name: 'Benson',
+                        line_1: '123 Sunny St',
+                        line_2: 'Sunnycreek',
+                        county: 'California',
+                        postcode: 'CA94040',
+                        country: 'US'
+                    },
+                    shipping_address: {
+                        first_name: 'John',
+                        last_name: 'Benson',
+                        line_1: '123 Sunny St',
+                        line_2: 'Sunnycreek',
+                        county: 'California',
+                        postcode: 'CA94040',
+                        country: 'US'
+                    }
+                };
+
+                const customer = {
+                    email: 'john@moltin.com',
+                    name: 'John Doe'
+                }
+
+                const billing_address = {
+                    billing_address: {
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        line_1: '2nd Floor British India House',
+                        line_2: '15 Carliol Square',
+                        city: 'Newcastle Upon Tyne',
+                        postcode: 'NE1 6UF',
+                        county: 'Tyne & Wear',
+                        country: 'United Kingdom'
+                    }
+                }
+
+                const shipping_address = {
+                    shipping_address: {
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        line_1: '2nd Floor British India House',
+                        line_2: '15 Carliol Square',
+                        city: 'Newcastle Upon Tyne',
+                        postcode: 'NE1 6UF',
+                        county: 'Tyne & Wear',
+                        country: 'United Kingdom'
+                    }
+                }
+
+                //TODO: define if condition if paypal or credit card 
+
+                let PaymentTemplate = {
+                    gateway: 'manual',
+                    method: 'authorize',
+                    status: 'complete'
+                };
+
+                /*
+                    Performs the checkout which generates an order object that is used to fulfill the request in Moltin.
+                */
+                api.Checkout(CheckoutTemplate).then(
+                    order => {
+                        console.log('this is the order: ' + order);
+                        api.OrderPay(order.data.id, PaymentTemplate);
+                        api.UpdateOrder(order.data.id, {
+                            data: {
+                                "status": "complete"
+                            }
+                        })
+                        api.DeleteCart();
+                    }
+                )
+                    .catch(e => {
+                        console.log('Something happened!');
+                        console.log(e);
+                    })
+
+                    .catch(e => {
+                        console.log(e);
+                    })
+
+                    .catch(e => {
+                        console.log(e);
+                    })
+
+
+
+                processPayment(data).then(res => {
+                    console.log('This is a success response, redirecting to order summary');
+                    dispatch(push('/ordersummary'));
+                }).catch(err => {
+                    console.log('Valio chitzuuu');
+                    console.log(err.response);
+                    this.setState({ processPaymentErrors: true, isLoading: false })
+                })
+            }
+        }, 1500);
     }
 
     render() {
 
+        //TODO: fix and test paypal
+
         const paypal_client = {
-            sandbox: 'YOUR-SANDBOX-APP-ID',
+            sandbox: 'H8X4X2D5PE6SS',
             production: 'YOUR-PRODUCTION-APP-ID',
         }
 
@@ -268,7 +337,7 @@ class CheckoutForm extends Component {
             width: '100%'
         }
 
-        if (cart.fetched === true && cart.fetching === false && products.fetched === true) {
+        if (cart.fetched === true && cart.fetching === false && products.fetched === true && this.state.isLoading != true) {
 
             let progressBar = (
                 <div></div>
@@ -290,14 +359,14 @@ class CheckoutForm extends Component {
             return (
                 <div className="container">
                     <div className="row">
-                        <div className="row" id="alert_box">
+                        <div className={processPaymentErrors ? 'row' : 'hide'} id="alert_box">
                             <div className="col s12 m10">
-                                <div className="card-content white-text">
+                                <div className="card-content white-text red">
                                     <p>Hubo un error, intenta de nuevo mas tarde.</p>
                                 </div>
                             </div>
                             <div className="col s12 m2">
-                                <i onClick={this.closeErrorBox} className="fa fa-times icon_style" id="alert_close" aria-hidden="true"></i>
+                                <i onClick={this.closeErrorBox} className="fa fa-times icon_style white-text" id="alert_close" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div className="col s6">
@@ -313,8 +382,11 @@ class CheckoutForm extends Component {
                             <hr />
                             <h4 className="bold">Pago</h4>
                             <p className="red">{this.state.cardErrors}</p>
-                            <p style={{ marginTop: 'unset' }} className={this.state.step === 1 ? 'show' : 'hide'}></p>
-                            <label><Field onClick={this.hidePaymentForm} name="payment_method" component="input" type="radio" value="paypal" /> <span className="shippingOptions">Paypal</span></label><br />
+                            <label className={this.state.step === 1 ? 'show' : 'hide'}>
+                                <Field onClick={this.hidePaymentForm} name="payment_method" component="input" type="radio" value="paypal" />
+                                <span className="shippingOptions">Paypal</span>
+                            </label>
+                            <br />
                             <div className={this.state.showPaypalButton && this.state.step === 1 ? 'show' : 'hide'}>
                                 <PaypalExpressBtn client={paypal_client} currency={'USD'} total={1.00} />
                             </div>
