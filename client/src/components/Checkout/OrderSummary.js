@@ -12,12 +12,12 @@ class OrderSummary extends Component {
         console.log('This is the order ID: ' + orderID);
         //TODO: Arreglar la vista de la confirmacion de orden
         return (
-            <div>
-                <h1> Gracias por su Orden </h1>
-                <p>Informacion de la orde:</p>
-                <p>ID de la orden: {orderID}</p>
-                <p>Total de la orden: $ {orderAmount}</p>
-                <p>Codigo de la orden: {orderAuthCode}</p>
+            <div id="highlights" class="row container">
+                <h1 class="center"> Gracias por su Orden </h1>
+                <p class="light center">Informacion de la orde:</p>
+                <p class="light center">ID de la orden: {orderID}</p>
+                <p class="light center">Total de la orden: $ {orderAmount}</p>
+                <p class="light center">Codigo de la orden: {orderAuthCode}</p>
             </div >
         );
     }

@@ -39,7 +39,9 @@ class CheckoutForm extends Component {
         isLoading: false,
         processPaymentErrors: false,
         cardErrors: null,
-        cartProducts: []
+        cartProducts: [],
+        envioPrecio: 0,
+        totalPrice: null
     }
 
 
@@ -97,9 +99,30 @@ class CheckoutForm extends Component {
     componentDidMount() {
         this.props.GetCartItems();
         this.props.GetProducts();
-
     }
 
+
+    // TODO: Fix this, why do we need a timeout!
+    setShippingPrice = () => {
+        const { envioPrecio } = this.state;
+        setTimeout(() => {
+            console.log("This is: " + this.props.envio)
+            switch(this.props.envio) {
+                case 'metodo1':
+                    this.setState({ envioPrecio: 150 })
+                    break;
+                case 'metodo2':
+                    this.setState({envioPrecio: 165 })
+                    break;
+                case 'metodo3':
+                    this.setState({envioPrecio: 185 })
+                    break;
+                default:
+                    break;
+            }
+        }, 1500);        
+    }
+   
     //TODO: set the loading part for the charge
     handleSubmit = (values, dispatch) => {
 
@@ -182,7 +205,7 @@ class CheckoutForm extends Component {
             }],
             // TODO: Figure this part out at last
             "shipping_lines": [{
-                "amount": 0,
+                "amount": this.state.envioPrecio,
                 "carrier": envio,
                 "method": "Airplane",
                 // "tracking_number" : "TRACK123",
@@ -356,8 +379,11 @@ class CheckoutForm extends Component {
 
             const { processPaymentErrors } = this.state;
 
+            let totalPricePlusShipping = (this.props.cart.cart.meta.display_price.with_tax.amount / 100 + this.state.envioPrecio).toFixed(2)
+
             return (
                 <div className="container">
+                    <h1>Checkout</h1>
                     <div className="row">
                         <div className={processPaymentErrors ? 'row' : 'hide'} id="alert_box">
                             <div className="col s12 m10">
@@ -369,12 +395,12 @@ class CheckoutForm extends Component {
                                 <i onClick={this.closeErrorBox} className="fa fa-times icon_style white-text" id="alert_close" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <div className="col s6">
+                        <div className="col s8">
                             <div className="progress" style={{ width: '93%' }}>
                                 {progressBar}
                             </div>
 
-                            <UserDetailsForm2 step={this.state.step} showProgress={this.showProgress} nextStep={this.nextStep} prevStep={this.prevStep} />
+                            <UserDetailsForm2 setShippingPrice={this.setShippingPrice} step={this.state.step} showProgress={this.showProgress} nextStep={this.nextStep} prevStep={this.prevStep} />
 
                             {
                                 this.state.step == 1 ? <ResumeDetails /> : null
@@ -396,40 +422,42 @@ class CheckoutForm extends Component {
                             </p>
                             <PaymentForm onSubmit={this.handleSubmit} step={this.state.step} showPaymentForm={this.state.showPaymentForm} isLoading={this.state.isLoading} changeLoading={this.changeLoading} />
                             <hr />
-
+                            {/* TODO insert here the small letters for the ack of the sale to the client  */}
+                            <small className="center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et reprehenderit modi sint est hic, sunt sed commodi blanditiis eveniet? Porro cumque dolor odio officia iste qui esse. Fugiat, aperiam ducimus.</small>
                         </div>
-                        <div className="col s6 grey lighten-4" style={{ paddingLeft: '5rem' }}>
-                            <h2>Pedido</h2>
+                        <div className="col s4 grey lighten-4" style={{padding: '0 2rem'}}>
+                            <h4>Su pedido</h4>
+                            <div style={{ fontSize: 'large', fontWeight: 'bolder', marginTop: '3rem' }}>
+                                <a href="#" className="btn-large teal ligthen-5 waves-effect">Continuar</a>
+                            </div>
                             <div className="row">
                                 <div className="col s6">
-                                    <p>Articulos:</p>
+                                    <p>Articulos</p>
                                 </div>
-                                <div className="col s6">
-                                    <p>{parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p>
-                                </div>
-
-                                <div className="col s6">
-                                    <p>Envio:</p>
-                                </div>
-                                <div className="col s6">
-                                    <p>{parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p>
+                                <div className="col s6" style={{textAlign: 'right'}}>
+                                    <p>$ {parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p>
                                 </div>
 
                                 <div className="col s6">
-                                    <p>Impuestos:</p>
+                                    <p>Envio</p>
+                                </div>
+                                <div className="col s6" style={{textAlign: 'right'}}>
+                                    <p>$ {this.state.envioPrecio}</p>
+                                </div>
+
+                                <div className="col s6">
+                                    <p>Impuestos</p>
+                                </div>
+                                <div className="col s6" style={{textAlign: 'right'}}>
+                                    {/* <p>{parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p> */}
+                                    <p>0.00</p>
                                 </div>
                                 <div className="col s6">
-                                    <p>{parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p>
+                                    <p className="bold">TOTAL</p>
                                 </div>
-                                <div className="col s6">
-                                    <h4>TOTAL</h4>
+                                <div className="col s6" style={{textAlign: 'right'}}>
+                                    <p className="bold">$ { totalPricePlusShipping }</p>
                                 </div>
-                                <div className="col s6">
-                                    <p>{parseFloat(cart.cart.meta.display_price.with_tax.amount / 100).toFixed(2)}</p>
-                                </div>
-                            </div>
-                            <div className="row center">
-                                <a href="#" className="btn teal ligthen-5 waves-effect">Checkout</a>
                             </div>
                             <div className="sep" style={{ height: '15vh' }}></div>
                             <div className="row">

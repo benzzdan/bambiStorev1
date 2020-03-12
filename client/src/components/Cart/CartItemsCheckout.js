@@ -27,22 +27,19 @@ class CartItemsCheckout extends Component {
 
                     return (
                         <div className="row" key={item.id}>
-                            <div className="col s4 m4">
+                            <div className="col s6 m6">
                                 <ProductImage
                                     alt="item.description"
                                     products={products}
                                     product={product}
-                                    size="50%"
+                                    size="80%"
                                 />
                             </div>
-                            <div className="col s4 m4">
-                                <p className="productName center">
+                            <div className="col s6 m6">
+                                <p className="productName bold" style={{fontSize: '15px'}}>
                                     {item.name}
                                 </p>
-                            </div>
-
-                            <div className="col s4 m4">
-                                <p className="priceCart">$ {parseFloat(item.unit_price.amount / 100 * item.quantity).toFixed(2)} MXN</p>
+                                <p className="priceCart" style={{fontSize: '15px'}}>$ {parseFloat(item.unit_price.amount / 100 * item.quantity).toFixed(2)} MXN</p>
                             </div>
                         </div>
                     )

@@ -4,33 +4,45 @@ import CheckoutForm from './CheckoutForm';
 // import MobileNav from '../global/Mobile/MobileNav';
 import Loading from '../global/Loading';
 import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
 
-function mapStateToProps(state) {
-    return state;
-}
+
 
 class CheckoutContainer extends Component {
 
-    // componentWillMount() {
-    //     const script = document.createElement('script');
+    componentDidMount() {
+        console.log("Current state")
+        console.log(this.props.cart);
+   
+    }
 
-    //     script.src = '../../js/production.min.js';
-    //     script.async = true;
+    componentDidUpdate() {
+        const {cart} = this.props;
 
-    //     document.body.appendChild(script);
-    // }
+        if (cart.fetched === true && cart.fetching === false) {
+            if(!cart.cart.data.length){
+                this.context.router.history.push('/');
+            }
+        }
+    }
 
     render() {
         if (this.props.payments.processing === false) {
             return (
                 <div>
-                    <h1>Checkout</h1>
                     <CheckoutForm />
                 </div>
             );
-        }
-
+        } 
     }
+}
+
+function mapStateToProps(state) {
+    return state;
+}
+
+CheckoutContainer.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(CheckoutContainer);

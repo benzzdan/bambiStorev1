@@ -8,8 +8,6 @@ import isEmpty from 'lodash/isEmpty';
 import Radio from './Radio'
 
 
-
-
 const validate = values => {
     const errors = {}
     if (!values.nombre) {
@@ -42,8 +40,8 @@ const validate = values => {
         console.log("No hay error!");
 
     } else {
-        console.log("Errors!");
-        console.log(errors.envio)
+        // console.log("Errors!");
+        // console.log(errors.envio)
     }
     return errors
 }
@@ -64,9 +62,9 @@ const renderField = ({ input, defaultValue, label, type, meta: { touched, error,
     </div>
 )
 
-const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress, submitting, pristine, invalid }) => (
-    < div >
-        <h4 className="bold">Envio  <span><a onClick={prevStep} className={step == 0 ? 'hide' : 'default-anchor'}>Cambiar</a></span></h4>
+const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress, submitting, pristine, invalid, setShippingPrice }) => (
+    <div>
+        <h3>Envio<span><a onClick={prevStep} className={step == 0 ? 'hide' : 'default-anchor'}>Cambiar</a></span></h3>
         <form onSubmit={handleSubmit} className={step != 0 ? 'hide' : null} style={{ width: '93%' }}>
 
             <Field name="email" type="email" component={renderField} label="Email" />
@@ -117,13 +115,17 @@ const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress
             <div className="row">
                 <div className="col s4">
                     <p style={{ marginTop: 'unset' }}>
-                        <label><Field name="envio" component="input" type="radio" value="metodo1" /> <span className="shippingOptions">Metodo 1</span></label><br />
+                        <label>
+                            <Field onClick={setShippingPrice} name="envio" component="input" type="radio" value="metodo1"/> 
+                            {/* <input type="radio" defaultChecked={true} name="envio" value="metodo1"/> */}
+                            <span className="shippingOptions">Metodo 1</span>
+                            </label><br/>
                     </p>
                     <p>
-                        <label><Field name="envio" component="input" type="radio" value="metodo2" /> <span className="shippingOptions">Metodo 2</span></label>
+                        <label><Field  onClick={setShippingPrice} name="envio" component="input" type="radio" value="metodo2"/> <span className="shippingOptions">Metodo 2</span></label>
                     </p>
                     <p>
-                        <label><Field name="envio" component="input" type="radio" value="metodo3" /> <span className="shippingOptions">Metodo 3</span></label>
+                        <label><Field  onClick={setShippingPrice} name="envio" component="input" type="radio" value="metodo3"/> <span className="shippingOptions">Metodo 3</span></label>
                     </p>
                 </div>
                 <div className="col s4">
@@ -151,7 +153,9 @@ const UserDetailsForm2 = ({ handleSubmit, step, nextStep, prevStep, showProgress
             </div>
             {/* <button onClick={(e) => { nextStep(); showProgress(); }} className="btn-large teal" type="submit">Continuar</button> */}
             {/* <button onClick={(e) => { showProgress(); }} className="btn-large t9eal" type="submit">Continuar</button> */}
-            <button id="the-button" onClick={(e) => { invalid ? null : nextStep(); showProgress(); }} type="submit" disabled={pristine || submitting}>Submit</button>
+            <div className="center" style={{ fontSize: 'large', fontWeight: 'bolder', margin: '3rem 0', padding: '0 5rem' }}>
+                <a  disabled={pristine || submitting} onClick={(e) => { invalid ? null : nextStep(); showProgress(); }} href="#" className="btn-large teal ligthen-5 waves-effect">Continuar</a>
+            </div>
         </form>
     </div >
 )
