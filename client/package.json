@@ -13,6 +13,7 @@
         "conekta": "^3.7.1",
         "history": "^4.9.0",
         "jquery": "^3.4.1",
+        "jsonwebtoken": "^8.5.1",
         "material-design-icons": "^3.0.1",
         "materialize-css": "^1.0.0",
         "react": "^16.x.0",
@@ -27,7 +28,8 @@
         "redux": "^3.7.1",
         "redux-devtools-extension": "^1.0.0",
         "redux-form": "7.2.3",
-        "redux-thunk": "^2.2.0"
+        "redux-thunk": "^2.2.0",
+        "validator": "^10.11.0"
     },
     "scripts": {
         "start": "react-scripts start",

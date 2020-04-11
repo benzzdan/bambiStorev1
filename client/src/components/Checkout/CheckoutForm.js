@@ -347,7 +347,7 @@ class CheckoutForm extends Component {
         //TODO: fix and test paypal
 
         const paypal_client = {
-            sandbox: 'H8X4X2D5PE6SS',
+            sandbox: 'AR8KIHwEcsqlGN3x-20pXGFonwMyQnYelYK6yJU2w-x6hgHkZMOGi1yrUHNC7JvijEKn2NSJ4fgntx7R',
             production: 'YOUR-PRODUCTION-APP-ID',
         }
 

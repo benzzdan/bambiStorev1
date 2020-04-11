@@ -4,7 +4,7 @@
 
 import express from 'express'
 import bodyParser from 'body-parser'
-import commonValidations from '../client/src/shared/validations/singup'
+import commonValidations from './shared/signup'
 import bcrypt from 'bcrypt';
 //import our model 
 import User from './models/user';

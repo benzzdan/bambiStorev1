@@ -10,7 +10,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "server": "nodemon --watch server.js --exec babel-node -- server.js",
-        "build": ""
+        "build": "",
+        "start": "node server.js"
     },
     "keywords": [],
     "author": "",
