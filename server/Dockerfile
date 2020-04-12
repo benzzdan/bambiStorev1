@@ -1,12 +1,14 @@
-FROM node:12.10.0-alpine
+FROM node:12.10.0
 
 WORKDIR /usr/app
+COPY yarn.lock ./
+COPY package.json ./
 
-COPY package*.json ./
-RUN npm ci -qy
+RUN yarn install
+
 
 COPY . .
 
 EXPOSE 5000
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
