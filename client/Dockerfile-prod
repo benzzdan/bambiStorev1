@@ -1,0 +1,27 @@
+FROM node:12.10.0 as builder
+
+WORKDIR /usr/app
+
+COPY yarn.lock ./
+COPY package*.json ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+
+
+FROM nginx:alpine
+
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+## Remote default nginx index page
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=builder /usr/app/build /usr/share/nginx/html
+
+EXPOSE 3000 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

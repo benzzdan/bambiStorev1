@@ -1,0 +1,23 @@
+version: '3'
+services:
+  server:
+    build:
+      context: ./server/
+    command: yarn run server
+    volumes:
+      - ./server/:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - "5000:5000"
+  #   # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
+    environment:
+      - NODE_ENV=production
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-prod
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+    restart: always
