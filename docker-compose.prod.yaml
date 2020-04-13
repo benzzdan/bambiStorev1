@@ -3,10 +3,11 @@ services:
   server:
     build:
       context: ./server/
-    command: yarn run server
-    volumes:
-      - ./server/:/usr/app
-      - /usr/app/node_modules
+      dockerfile: Dockerfile-prod
+    # command: yarn start
+    # volumes:
+    #   - ./server/:/usr/app
+    #   - /usr/app/node_modules
     ports:
       - "5000:5000"
   #   # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
