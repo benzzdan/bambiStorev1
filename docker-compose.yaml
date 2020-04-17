@@ -24,3 +24,6 @@ services:
       - server
     ports:
       - "3000:3000"
+    environment:
+      - GCP_URL=http://34.67.120.251:5000
+      - NODE_ENV=development

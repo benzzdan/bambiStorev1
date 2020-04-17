@@ -3,7 +3,12 @@ import {
     SET_LOADING
 } from '../src/ducks/checkout';
 
-axios.defaults.baseURL = 'http://localhost:5000'
+if (process.env.NODE_ENV) {
+    axios.defaults.baseURL = process.env.GCP_URL
+} else {
+    axios.defaults.baseURL = 'http://localhost:5000'
+}
+
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 

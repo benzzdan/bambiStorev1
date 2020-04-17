@@ -4,7 +4,12 @@ import jwt from 'jsonwebtoken'
 //importing the type of SET_CURRENT_USER to be used on our actions
 import { SET_CURRENT_USER } from './auth';
 
-axios.defaults.baseURL = 'http://localhost:5000'
+
+if (process.env.NODE_ENV) {
+    axios.defaults.baseURL = process.env.GCP_URL
+} else {
+    axios.defaults.baseURL = 'http://localhost:5000'
+}
 // axios.defaults.proxy = 'http://localhost'
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 axios.defaults.headers.post['Content-Type'] = 'application/json'

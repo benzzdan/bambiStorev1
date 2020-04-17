@@ -22,3 +22,7 @@ services:
     ports:
       - "80:80"
     restart: always
+    environment:
+      - GCP_URL=http://34.67.120.251:5000
+      - NODE_ENV=production
+      
