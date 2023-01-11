@@ -22,7 +22,7 @@
         "conekta": "^3.7.1",
         "express": "^4.16.4",
         "jsonwebtoken": "^8.5.1",
-        "knex": "^0.12.0",
+        "knex": "^2.4.0",
         "lodash": "^4.17.11",
         "pg": "^7.8.1",
         "validator": "^10.11.0"
